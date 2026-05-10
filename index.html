@@ -792,7 +792,7 @@
         <div class="dot dot-g"></div>
       </div>
       <div class="prompt-text" id="prompt-output">
-        <span class="prompt-empty">Fill in your details on the left to generate your personalized nutrition prompt...</span>
+        <span class="prompt-empty">Fill in your details to generate your personalized nutrition prompt...</span>
       </div>
     </div>
 
@@ -961,7 +961,7 @@
     // Check if enough data to generate
     const hasAny = d.age || d.sex || d.weight || d.goal || d.diet || d.activity;
     if (!hasAny) {
-      document.getElementById('prompt-output').innerHTML = '<span class="prompt-empty">Fill in your details on the left to generate your personalized nutrition prompt...</span>';
+      document.getElementById('prompt-output').innerHTML = '<span class="prompt-empty">Fill in your details to generate your personalized nutrition prompt...</span>';
       return;
     }
 
