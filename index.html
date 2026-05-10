@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Build the perfect AI nutrition prompt. Fill in your stats, goals, and preferences — get a ready-to-paste prompt for ChatGPT, Claude, or any AI assistant.">
+<title>Nutrition with AI — Vladimir Brusov | Strength Coach</title>
+<link rel="canonical" href="https://brusovcoach.org/nutrition">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0A1F;
+    --gold: #C9A84C;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark2: #1A1A1A;
+    --dark3: #242424;
+    --gray: #888888;
+    --light: #D4CFC8;
+    --white: #F5F0E8;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Crimson Pro', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(10,10,10,.96);
+    border-bottom: 1px solid #222;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 64px;
+    backdrop-filter: blur(8px);
+    transition: border-color .3s;
+  }
+  nav.scrolled { border-bottom-color: var(--red); }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 1.7rem; letter-spacing: .06em;
+    color: var(--white); text-decoration: none;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-back {
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em;
+    color: var(--gray); text-decoration: none; text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-back:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 2rem 80px;
+    max-width: 900px; margin: 0 auto;
+    text-align: center;
+  }
+  .hero-tag {
+    font-family: var(--font-mono); font-size: .72rem;
+    color: var(--red); letter-spacing: .15em; text-transform: uppercase;
+    margin-bottom: 1rem; display: block;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-size: clamp(2.8rem, 8vw, 5.5rem);
+    letter-spacing: .04em; line-height: 1;
+    color: var(--white); margin-bottom: 1.25rem;
+  }
+  .hero h1 span { color: var(--red); }
+  .hero-sub {
+    font-size: 1.15rem; color: var(--light); max-width: 600px;
+    margin: 0 auto 1.5rem; line-height: 1.7;
+  }
+  .hero-note {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--dark2); border: 1px solid #333; border-radius: 6px;
+    padding: .5rem 1rem; font-family: var(--font-mono); font-size: .75rem;
+    color: var(--gray); letter-spacing: .06em;
+  }
+  .hero-note strong { color: var(--gold); }
+
+  /* LAYOUT */
+  .page-wrap {
+    max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 6rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .page-wrap { grid-template-columns: 1fr; }
+  }
+
+  /* FORM PANEL */
+  .form-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .form-section {
+    background: var(--dark2); border: 1px solid #2a2a2a;
+    border-radius: 10px; overflow: hidden;
+  }
+  .section-header {
+    background: var(--dark3); padding: .9rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .section-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--red); color: var(--white);
+    font-family: var(--font-mono); font-size: .7rem; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: var(--font-display); font-size: 1.1rem;
+    letter-spacing: .06em; color: var(--white);
+  }
+  .section-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  /* FORM CONTROLS */
+  .field { display: flex; flex-direction: column; gap: .35rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+  label {
+    font-family: var(--font-mono); font-size: .68rem;
+    color: var(--gray); letter-spacing: .1em; text-transform: uppercase;
+  }
+  input[type="number"], input[type="text"], select, textarea {
+    background: var(--dark3); border: 1px solid #333; border-radius: 6px;
+    color: var(--white); font-family: var(--font-body); font-size: .95rem;
+    padding: .6rem .85rem; width: 100%;
+    transition: border-color .2s;
+    appearance: none; -webkit-appearance: none;
+  }
+  input[type="number"]:focus, input[type="text"]:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--red);
+  }
+  input::placeholder, textarea::placeholder { color: #555; }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .75rem center; padding-right: 2rem; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* UNIT TOGGLE */
+  .unit-toggle {
+    display: flex; gap: 0; border: 1px solid #333; border-radius: 6px;
+    overflow: hidden; width: fit-content;
+  }
+  .unit-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: .7rem; color: var(--gray);
+    padding: .4rem .8rem; transition: background .2s, color .2s;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .unit-btn.active { background: var(--red); color: var(--white); }
+
+  /* CHECKBOXES */
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .check-item {
+    display: flex; align-items: center; gap: .5rem;
+    cursor: pointer; font-size: .92rem; color: var(--light);
+  }
+  .check-item input[type="checkbox"] {
+    width: 16px; height: 16px; cursor: pointer;
+    accent-color: var(--red); flex-shrink: 0;
+    appearance: auto; -webkit-appearance: auto;
+    border: none; background: none; padding: 0;
+  }
+
+  /* OUTPUT OPTIONS */
+  .output-grid { display: flex; flex-direction: column; gap: .5rem; }
+  .output-item {
+    display: flex; align-items: flex-start; gap: .6rem;
+    cursor: pointer; padding: .6rem .75rem;
+    border: 1px solid #2a2a2a; border-radius: 6px;
+    transition: border-color .2s, background .2s;
+  }
+  .output-item:hover { border-color: #444; background: var(--dark3); }
+  .output-item input[type="checkbox"] {
+    width: 16px; height: 16px; cursor: pointer;
+    accent-color: var(--red); flex-shrink: 0; margin-top: 3px;
+    appearance: auto; -webkit-appearance: auto;
+    border: none; background: none; padding: 0;
+  }
+  .output-label { display: flex; flex-direction: column; gap: .1rem; }
+  .output-label strong { font-size: .95rem; color: var(--white); }
+  .output-label span { font-size: .8rem; color: var(--gray); }
+
+  /* PROMPT PANEL */
+  .prompt-panel {
+    position: sticky; top: 84px;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  @media (max-width: 860px) { .prompt-panel { position: static; } }
+
+  .prompt-header {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem;
+  }
+  .prompt-title {
+    font-family: var(--font-display); font-size: 1.4rem;
+    letter-spacing: .05em; color: var(--white);
+  }
+  .copy-btn {
+    background: var(--red); color: var(--white); border: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em;
+    text-transform: uppercase; padding: .55rem 1.1rem; border-radius: 6px;
+    transition: background .2s, transform .1s;
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .copy-btn:hover { background: var(--red-dark); }
+  .copy-btn:active { transform: scale(.97); }
+  .copy-btn.copied { background: #1a5c1a; }
+
+  .prompt-box {
+    background: var(--dark2); border: 1px solid #2a2a2a; border-radius: 10px;
+    overflow: hidden;
+  }
+  .prompt-box-bar {
+    background: var(--dark3); padding: .6rem 1rem;
+    display: flex; align-items: center; gap: .5rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .prompt-text {
+    font-family: var(--font-mono); font-size: .75rem; line-height: 1.75;
+    color: var(--light); padding: 1.25rem;
+    white-space: pre-wrap; word-break: break-word;
+    min-height: 200px; max-height: 70vh; overflow-y: auto;
+  }
+  .prompt-empty {
+    color: #444; font-style: italic; font-family: var(--font-body);
+    font-size: .9rem;
+  }
+
+  .prompt-hint {
+    background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 8px;
+    padding: .85rem 1rem; font-size: .85rem; color: var(--gray);
+    line-height: 1.6;
+  }
+  .prompt-hint strong { color: var(--gold); font-weight: 600; }
+  .prompt-hint a { color: var(--gold); text-decoration: none; }
+  .prompt-hint a:hover { text-decoration: underline; }
+
+  /* AI LOGOS */
+  .ai-links {
+    display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .25rem;
+  }
+  .ai-chip {
+    font-family: var(--font-mono); font-size: .65rem; letter-spacing: .08em;
+    padding: .3rem .65rem; border-radius: 4px; text-decoration: none;
+    text-transform: uppercase; border: 1px solid #333; color: var(--gray);
+    transition: color .2s, border-color .2s;
+  }
+  .ai-chip:hover { color: var(--white); border-color: var(--gold); }
+
+  /* RANGE SLIDER */
+  .slider-wrap { display: flex; align-items: center; gap: .75rem; }
+  input[type="range"] {
+    flex: 1; accent-color: var(--red); cursor: pointer;
+    background: none; border: none; padding: 0;
+    appearance: auto; -webkit-appearance: auto;
+  }
+  .slider-val {
+    font-family: var(--font-mono); font-size: .78rem; color: var(--gold);
+    min-width: 2.5rem; text-align: right;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 2rem; border-top: 1px solid #1a1a1a;
+    font-family: var(--font-mono); font-size: .7rem; color: #444;
+    letter-spacing: .06em;
+  }
+  footer a { color: #555; text-decoration: none; }
+  footer a:hover { color: var(--light); }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a class="nav-logo" href="/">Vladimir Brusov<span>.</span></a>
+  <a class="nav-back" href="/">← Back to main site</a>
+</nav>
+
+<section class="hero">
+  <span class="hero-tag">Coaching Tool</span>
+  <h1>Nutrition<br>with <span>AI</span></h1>
+  <p class="hero-sub">Fill in your details. Get a precision-crafted prompt you can paste into any AI assistant to build a personalized nutrition plan — macros, meals, recipes, and grocery list.</p>
+  <span class="hero-note">No AI runs on this page. <strong>You stay in control.</strong> Paste the prompt wherever you want.</span>
+</section>
+
+<div class="page-wrap">
+
+  <!-- ═══════════════════════ FORM ═══════════════════════ -->
+  <div class="form-panel">
+
+    <!-- 1. STATS -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">Your Stats</div>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>Units</label>
+          <div class="unit-toggle">
+            <button class="unit-btn active" id="unit-imperial" onclick="setUnit('imperial')">Imperial (lbs / ft)</button>
+            <button class="unit-btn" id="unit-metric" onclick="setUnit('metric')">Metric (kg / cm)</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Age</label>
+            <input type="number" id="age" min="14" max="99" placeholder="e.g. 35" oninput="buildPrompt()">
+          </div>
+          <div class="field">
+            <label>Sex</label>
+            <select id="sex" onchange="buildPrompt()">
+              <option value="">— select —</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row" id="height-imperial">
+          <div class="field">
+            <label>Height — feet</label>
+            <input type="number" id="height-ft" min="4" max="7" placeholder="5" oninput="buildPrompt()">
+          </div>
+          <div class="field">
+            <label>Height — inches</label>
+            <input type="number" id="height-in" min="0" max="11" placeholder="11" oninput="buildPrompt()">
+          </div>
+        </div>
+        <div class="field" id="height-metric" style="display:none">
+          <label>Height (cm)</label>
+          <input type="number" id="height-cm" min="130" max="230" placeholder="e.g. 180" oninput="buildPrompt()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label id="weight-label">Weight (lbs)</label>
+            <input type="number" id="weight" min="80" max="400" placeholder="e.g. 185" oninput="buildPrompt()">
+          </div>
+          <div class="field">
+            <label>Body fat % <span style="color:#555">(optional)</span></label>
+            <input type="number" id="bf" min="3" max="55" placeholder="e.g. 18" oninput="buildPrompt()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Activity level</label>
+          <select id="activity" onchange="buildPrompt()">
+            <option value="">— select —</option>
+            <option value="sedentary">Sedentary (desk job, little to no exercise)</option>
+            <option value="lightly">Lightly active (1–2 workouts/week)</option>
+            <option value="moderate">Moderately active (3–4 workouts/week)</option>
+            <option value="very">Very active (5–6 workouts/week, physical job)</option>
+            <option value="athlete">Athlete (2× daily training or hard manual labor)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. GOAL -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">Your Goal</div>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>Primary goal</label>
+          <select id="goal" onchange="buildPrompt()">
+            <option value="">— select —</option>
+            <option value="fat_loss">Fat loss (cut) — lose body fat, preserve muscle</option>
+            <option value="muscle_gain">Muscle gain (bulk) — build size and strength</option>
+            <option value="recomp">Body recomposition — lose fat and build muscle simultaneously</option>
+            <option value="maintain">Maintain weight — keep current body composition</option>
+            <option value="performance">Performance — fuel athletic output and recovery</option>
+            <option value="health">General health — balanced eating, long-term wellness</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Calorie preference <span style="color:#555">(leave blank to let AI calculate)</span></label>
+          <select id="calorie-pref" onchange="buildPrompt()">
+            <option value="">AI calculates based on my stats</option>
+            <option value="deficit_aggressive">Aggressive deficit (~500 kcal below TDEE)</option>
+            <option value="deficit_moderate">Moderate deficit (~250–300 kcal below TDEE)</option>
+            <option value="deficit_mild">Mild deficit (~150 kcal below TDEE)</option>
+            <option value="maintenance">Maintenance (TDEE)</option>
+            <option value="surplus_lean">Lean surplus (+150–200 kcal above TDEE)</option>
+            <option value="surplus_moderate">Moderate surplus (+300–400 kcal above TDEE)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. DIET -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title">Diet & Preferences</div>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>Diet type</label>
+          <select id="diet" onchange="buildPrompt()">
+            <option value="">— select —</option>
+            <option value="omnivore">Omnivore (eat everything)</option>
+            <option value="carnivore">Carnivore / animal-based</option>
+            <option value="pescatarian">Pescatarian (fish, no meat)</option>
+            <option value="vegetarian">Vegetarian (no meat or fish)</option>
+            <option value="vegan">Vegan (no animal products)</option>
+            <option value="halal">Halal</option>
+            <option value="kosher">Kosher</option>
+            <option value="paleo">Paleo</option>
+            <option value="keto">Ketogenic (very low carb)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Allergies & restrictions (check all that apply)</label>
+          <div class="check-grid" id="allergies">
+            <label class="check-item"><input type="checkbox" value="gluten-free" onchange="buildPrompt()"> Gluten-free</label>
+            <label class="check-item"><input type="checkbox" value="dairy-free" onchange="buildPrompt()"> Dairy-free</label>
+            <label class="check-item"><input type="checkbox" value="nut allergy" onchange="buildPrompt()"> Tree nut allergy</label>
+            <label class="check-item"><input type="checkbox" value="peanut allergy" onchange="buildPrompt()"> Peanut allergy</label>
+            <label class="check-item"><input type="checkbox" value="shellfish allergy" onchange="buildPrompt()"> Shellfish allergy</label>
+            <label class="check-item"><input type="checkbox" value="egg-free" onchange="buildPrompt()"> Egg-free</label>
+            <label class="check-item"><input type="checkbox" value="soy-free" onchange="buildPrompt()"> Soy-free</label>
+            <label class="check-item"><input type="checkbox" value="low-FODMAP" onchange="buildPrompt()"> Low-FODMAP</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Foods I dislike or want to avoid</label>
+          <input type="text" id="avoid" placeholder="e.g. cilantro, mushrooms, liver, brussels sprouts" oninput="buildPrompt()">
+        </div>
+        <div class="field">
+          <label>Foods I enjoy or want more of <span style="color:#555">(optional)</span></label>
+          <input type="text" id="enjoy" placeholder="e.g. chicken, rice, Greek yogurt, eggs" oninput="buildPrompt()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. MEAL STRUCTURE -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title">Meal Structure</div>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>Meals per day: <span id="meals-val" style="color:var(--gold)">3</span></label>
+          <div class="slider-wrap">
+            <span style="font-size:.8rem;color:var(--gray)">2</span>
+            <input type="range" id="meals" min="2" max="6" value="3" oninput="document.getElementById('meals-val').textContent=this.value; buildPrompt()">
+            <span style="font-size:.8rem;color:var(--gray)">6</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Eating window / timing</label>
+          <select id="timing" onchange="buildPrompt()">
+            <option value="">No specific preference</option>
+            <option value="3meals_classic">Classic 3 meals (breakfast, lunch, dinner)</option>
+            <option value="if_16_8">Intermittent fasting — 16:8 (8-hour eating window)</option>
+            <option value="if_18_6">Intermittent fasting — 18:6</option>
+            <option value="if_20_4">Intermittent fasting — 20:4</option>
+            <option value="around_training">Meals timed around training (pre/post-workout focus)</option>
+            <option value="custom">Other (I'll describe below)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Cooking time available per meal</label>
+          <select id="cook-time" onchange="buildPrompt()">
+            <option value="">No preference</option>
+            <option value="quick">Quick — under 20 minutes (minimal prep)</option>
+            <option value="moderate">Moderate — 20–45 minutes</option>
+            <option value="relaxed">Relaxed — up to 1 hour, enjoy cooking</option>
+            <option value="meal_prep">Meal prep style — cook 1–2 times per week in bulk</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Cooking skill level</label>
+          <select id="skill" onchange="buildPrompt()">
+            <option value="">No preference</option>
+            <option value="beginner">Beginner (basic techniques, simple recipes)</option>
+            <option value="intermediate">Intermediate (comfortable in the kitchen)</option>
+            <option value="advanced">Advanced (comfortable with complex techniques)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Grocery budget</label>
+          <select id="budget" onchange="buildPrompt()">
+            <option value="">No preference</option>
+            <option value="budget">Budget-friendly (prioritize cost-effective foods)</option>
+            <option value="moderate">Moderate (balanced quality and cost)</option>
+            <option value="flexible">Flexible (quality over cost)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Additional notes <span style="color:#555">(training schedule, lifestyle, anything else)</span></label>
+          <textarea id="notes" placeholder="e.g. I train at 6am fasted. Work night shifts. Travel often. Cooking for family of 4." oninput="buildPrompt()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. OUTPUT -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title">What to Generate</div>
+      </div>
+      <div class="section-body">
+        <div class="output-grid">
+          <label class="output-item">
+            <input type="checkbox" id="out-macros" checked onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Daily calorie & macro targets</strong>
+              <span>Total kcal, protein, carbs, and fat in grams</span>
+            </div>
+          </label>
+          <label class="output-item">
+            <input type="checkbox" id="out-weekplan" checked onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Full 7-day meal plan</strong>
+              <span>Every meal named with portion sizes and per-meal macros</span>
+            </div>
+          </label>
+          <label class="output-item">
+            <input type="checkbox" id="out-recipes" onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Recipes with instructions</strong>
+              <span>Step-by-step for selected meals (ingredients + method)</span>
+            </div>
+          </label>
+          <label class="output-item">
+            <input type="checkbox" id="out-grocery" onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Weekly grocery list</strong>
+              <span>Organized by category (produce, protein, grains, etc.)</span>
+            </div>
+          </label>
+          <label class="output-item">
+            <input type="checkbox" id="out-prep" onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Meal prep guide</strong>
+              <span>Batch cooking tips, storage, and weekly prep schedule</span>
+            </div>
+          </label>
+          <label class="output-item">
+            <input type="checkbox" id="out-swap" onchange="buildPrompt()">
+            <div class="output-label">
+              <strong>Substitution list</strong>
+              <span>Alternatives for key ingredients if something isn't available</span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- end form-panel -->
+
+  <!-- ═══════════════════════ PROMPT ═══════════════════════ -->
+  <div class="prompt-panel">
+    <div class="prompt-header">
+      <div class="prompt-title">Your Prompt</div>
+      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy prompt
+      </button>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="prompt-text" id="prompt-output">
+        <span class="prompt-empty">Fill in your details on the left to generate your personalized nutrition prompt...</span>
+      </div>
+    </div>
+
+    <div class="prompt-hint">
+      <strong>How to use:</strong> Click "Copy prompt" above, then paste it into any AI assistant.<br>
+      <div class="ai-links">
+        <a class="ai-chip" href="https://chat.openai.com" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+        <a class="ai-chip" href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude</a>
+        <a class="ai-chip" href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Gemini</a>
+        <a class="ai-chip" href="https://copilot.microsoft.com" target="_blank" rel="noopener noreferrer">Copilot</a>
+      </div>
+      <br>
+      <strong>Tip:</strong> If you get a generic answer, reply: <em>"Be more specific. Give me exact gram amounts for each meal and use only foods from my list."</em>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="/">brusovcoach.org</a> &nbsp;·&nbsp; &copy; 2026 Vladimir Brusov
+</footer>
+
+<script>
+  // NAV SCROLL
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', scrollY > 60);
+  });
+
+  // UNIT SYSTEM
+  let unit = 'imperial';
+  function setUnit(u) {
+    unit = u;
+    document.getElementById('unit-imperial').classList.toggle('active', u === 'imperial');
+    document.getElementById('unit-metric').classList.toggle('active', u === 'metric');
+    document.getElementById('height-imperial').style.display = u === 'imperial' ? 'grid' : 'none';
+    document.getElementById('height-metric').style.display = u === 'metric' ? 'flex' : 'none';
+    document.getElementById('weight-label').textContent = u === 'imperial' ? 'Weight (lbs)' : 'Weight (kg)';
+    document.getElementById('weight').placeholder = u === 'imperial' ? 'e.g. 185' : 'e.g. 84';
+    buildPrompt();
+  }
+
+  // COLLECT DATA
+  function getData() {
+    const age = document.getElementById('age').value.trim();
+    const sex = document.getElementById('sex').value;
+    const weight = document.getElementById('weight').value.trim();
+    const bf = document.getElementById('bf').value.trim();
+    const activity = document.getElementById('activity').value;
+    const goal = document.getElementById('goal').value;
+    const calPref = document.getElementById('calorie-pref').value;
+    const diet = document.getElementById('diet').value;
+    const avoid = document.getElementById('avoid').value.trim();
+    const enjoy = document.getElementById('enjoy').value.trim();
+    const meals = document.getElementById('meals').value;
+    const timing = document.getElementById('timing').value;
+    const cookTime = document.getElementById('cook-time').value;
+    const skill = document.getElementById('skill').value;
+    const budget = document.getElementById('budget').value;
+    const notes = document.getElementById('notes').value.trim();
+
+    // height
+    let heightStr = '';
+    if (unit === 'imperial') {
+      const ft = document.getElementById('height-ft').value.trim();
+      const inches = document.getElementById('height-in').value.trim();
+      if (ft || inches) heightStr = `${ft || '?'}ft ${inches || '0'}in`;
+    } else {
+      const cm = document.getElementById('height-cm').value.trim();
+      if (cm) heightStr = cm + ' cm';
+    }
+
+    // allergies
+    const allergyBoxes = document.querySelectorAll('#allergies input[type="checkbox"]:checked');
+    const allergies = Array.from(allergyBoxes).map(cb => cb.value);
+
+    // outputs
+    const outMacros = document.getElementById('out-macros').checked;
+    const outWeek = document.getElementById('out-weekplan').checked;
+    const outRecipes = document.getElementById('out-recipes').checked;
+    const outGrocery = document.getElementById('out-grocery').checked;
+    const outPrep = document.getElementById('out-prep').checked;
+    const outSwap = document.getElementById('out-swap').checked;
+
+    return { age, sex, weight, bf, heightStr, activity, goal, calPref, diet, allergies, avoid, enjoy, meals, timing, cookTime, skill, budget, notes, outMacros, outWeek, outRecipes, outGrocery, outPrep, outSwap };
+  }
+
+  // LABEL MAPS
+  const activityLabels = {
+    sedentary: 'Sedentary — desk job, little to no exercise',
+    lightly: 'Lightly active — 1–2 workouts per week',
+    moderate: 'Moderately active — 3–4 workouts per week',
+    very: 'Very active — 5–6 workouts per week or physical job',
+    athlete: 'Athlete — 2× daily training or very hard manual labor'
+  };
+  const goalLabels = {
+    fat_loss: 'Fat loss — lose body fat while preserving as much muscle as possible',
+    muscle_gain: 'Muscle gain — build size and strength with a controlled calorie surplus',
+    recomp: 'Body recomposition — simultaneously reduce body fat and build lean muscle',
+    maintain: 'Maintain current weight and body composition',
+    performance: 'Athletic performance — maximize energy, output, and recovery',
+    health: 'General health — balanced, sustainable eating for long-term wellness'
+  };
+  const calPrefLabels = {
+    deficit_aggressive: 'Use an aggressive calorie deficit (~500 kcal below my TDEE)',
+    deficit_moderate: 'Use a moderate calorie deficit (~250–300 kcal below TDEE)',
+    deficit_mild: 'Use a mild calorie deficit (~150 kcal below TDEE)',
+    maintenance: 'Set calories at my TDEE (maintenance)',
+    surplus_lean: 'Use a lean bulk surplus (+150–200 kcal above TDEE)',
+    surplus_moderate: 'Use a moderate surplus (+300–400 kcal above TDEE)'
+  };
+  const dietLabels = {
+    omnivore: 'Omnivore (I eat everything)',
+    carnivore: 'Carnivore / animal-based (meat, fish, eggs, dairy only)',
+    pescatarian: 'Pescatarian (fish and seafood, no meat)',
+    vegetarian: 'Vegetarian (no meat or fish)',
+    vegan: 'Vegan (no animal products)',
+    halal: 'Halal',
+    kosher: 'Kosher',
+    paleo: 'Paleo (whole foods, no grains or legumes)',
+    keto: 'Ketogenic (very low carb, high fat)'
+  };
+  const timingLabels = {
+    '3meals_classic': 'Traditional 3 meals: breakfast, lunch, and dinner',
+    if_16_8: 'Intermittent fasting — 16:8 protocol (8-hour eating window)',
+    if_18_6: 'Intermittent fasting — 18:6 protocol',
+    if_20_4: 'Intermittent fasting — 20:4 protocol (4-hour eating window)',
+    around_training: 'Meals timed around training (emphasize pre- and post-workout nutrition)',
+    custom: 'Custom timing (see notes)'
+  };
+  const cookTimeLabels = {
+    quick: 'Quick meals — under 20 minutes, minimal prep',
+    moderate: 'Moderate — 20 to 45 minutes per meal',
+    relaxed: 'Relaxed — up to 1 hour, I enjoy cooking',
+    meal_prep: 'Meal prep style — I batch cook 1–2 times per week'
+  };
+  const skillLabels = {
+    beginner: 'Beginner — keep recipes simple, basic techniques only',
+    intermediate: 'Intermediate — comfortable with most cooking methods',
+    advanced: 'Advanced — complex techniques are fine'
+  };
+  const budgetLabels = {
+    budget: 'Budget-friendly — prioritize affordable, cost-effective foods',
+    moderate: 'Moderate budget — balance quality and cost',
+    flexible: 'Flexible budget — quality over cost, premium ingredients are fine'
+  };
+
+  // BUILD PROMPT
+  function buildPrompt() {
+    const d = getData();
+
+    // Check if enough data to generate
+    const hasAny = d.age || d.sex || d.weight || d.goal || d.diet || d.activity;
+    if (!hasAny) {
+      document.getElementById('prompt-output').innerHTML = '<span class="prompt-empty">Fill in your details on the left to generate your personalized nutrition prompt...</span>';
+      return;
+    }
+
+    let lines = [];
+
+    // ROLE
+    lines.push('You are an expert nutrition specialist and registered dietitian. Create a detailed, personalized nutrition plan based on the profile below. Be specific with all numbers — use exact gram amounts, calorie counts, and portion sizes. Do not give generic advice.');
+    lines.push('');
+
+    // PROFILE
+    lines.push('═══════════════════════════════════════');
+    lines.push('MY PROFILE');
+    lines.push('═══════════════════════════════════════');
+    const profileParts = [];
+    if (d.age) profileParts.push(`Age: ${d.age}`);
+    if (d.sex) profileParts.push(`Sex: ${d.sex.charAt(0).toUpperCase() + d.sex.slice(1)}`);
+    if (d.weight) profileParts.push(`Weight: ${d.weight} ${unit === 'imperial' ? 'lbs' : 'kg'}`);
+    if (d.heightStr) profileParts.push(`Height: ${d.heightStr}`);
+    if (d.bf) profileParts.push(`Body fat: ~${d.bf}%`);
+    if (profileParts.length) lines.push(profileParts.join(' | '));
+    if (d.activity) lines.push(`Activity level: ${activityLabels[d.activity] || d.activity}`);
+    lines.push('');
+
+    // GOAL
+    lines.push('═══════════════════════════════════════');
+    lines.push('MY GOAL');
+    lines.push('═══════════════════════════════════════');
+    if (d.goal) lines.push(`Goal: ${goalLabels[d.goal] || d.goal}`);
+    if (d.calPref) {
+      lines.push(`Calorie approach: ${calPrefLabels[d.calPref] || d.calPref}`);
+    } else {
+      lines.push('Calorie approach: Calculate my TDEE and set calories based on my goal');
+    }
+    lines.push('');
+
+    // DIET
+    lines.push('═══════════════════════════════════════');
+    lines.push('MY DIET & RESTRICTIONS');
+    lines.push('═══════════════════════════════════════');
+    if (d.diet) lines.push(`Diet type: ${dietLabels[d.diet] || d.diet}`);
+    if (d.allergies.length) lines.push(`Allergies / restrictions: ${d.allergies.join(', ')}`);
+    if (d.avoid) lines.push(`Foods to AVOID (do not include these): ${d.avoid}`);
+    if (d.enjoy) lines.push(`Foods I enjoy and want included: ${d.enjoy}`);
+    if (!d.diet && !d.allergies.length && !d.avoid) lines.push('No specific dietary restrictions');
+    lines.push('');
+
+    // STRUCTURE
+    lines.push('═══════════════════════════════════════');
+    lines.push('MEAL STRUCTURE');
+    lines.push('═══════════════════════════════════════');
+    lines.push(`Meals per day: ${d.meals}`);
+    if (d.timing) lines.push(`Eating schedule: ${timingLabels[d.timing] || d.timing}`);
+    if (d.cookTime) lines.push(`Cooking time: ${cookTimeLabels[d.cookTime] || d.cookTime}`);
+    if (d.skill) lines.push(`Cooking skill: ${skillLabels[d.skill] || d.skill}`);
+    if (d.budget) lines.push(`Budget: ${budgetLabels[d.budget] || d.budget}`);
+    if (d.notes) {
+      lines.push('');
+      lines.push('Additional context:');
+      lines.push(d.notes);
+    }
+    lines.push('');
+
+    // OUTPUT
+    const outputs = [];
+    if (d.outMacros) outputs.push('1. My daily calorie target and macro breakdown (protein, carbs, fat in grams). Show your TDEE calculation and explain the logic.');
+    if (d.outWeek) outputs.push(`${outputs.length + 1}. A full 7-day meal plan. For each day: list every meal with its name, ingredients, portion sizes (in grams or cups), and per-meal macros. Include a daily total.`);
+    if (d.outRecipes) outputs.push(`${outputs.length + 1}. Detailed recipes for at least 3 meals from the plan — full ingredient list with amounts and step-by-step preparation instructions.`);
+    if (d.outGrocery) outputs.push(`${outputs.length + 1}. A weekly grocery list organized by category (produce, proteins, grains, dairy/alternatives, pantry staples). Include approximate quantities needed for the week.`);
+    if (d.outPrep) outputs.push(`${outputs.length + 1}. A meal prep guide — which foods to batch cook, storage instructions, and a suggested weekly prep schedule (e.g., Sunday cook, Wednesday refresh).`);
+    if (d.outSwap) outputs.push(`${outputs.length + 1}. A substitution list — for each main protein and carb source, provide 2 alternatives with equivalent macro profiles.`);
+
+    lines.push('═══════════════════════════════════════');
+    lines.push('PLEASE PROVIDE');
+    lines.push('═══════════════════════════════════════');
+    if (outputs.length) {
+      outputs.forEach(o => lines.push(o));
+    } else {
+      lines.push('A complete, detailed nutrition plan based on my profile above — include calorie targets, macros, and a sample meal structure.');
+    }
+    lines.push('');
+
+    // FORMATTING RULES
+    const wantsMealData = d.outMacros || d.outWeek || !outputs.length;
+    lines.push('═══════════════════════════════════════');
+    lines.push('FORMAT REQUIREMENTS');
+    lines.push('═══════════════════════════════════════');
+    lines.push('• Use clear headers and sections');
+    lines.push('• All portion sizes must be in specific amounts (grams, cups, oz) — no vague terms like "a handful" or "some"');
+    if (wantsMealData) lines.push('• Show macros (P/C/F/kcal) for each meal and daily totals');
+    if (d.avoid) lines.push('• Do not include foods I listed under "avoid"');
+    lines.push('• Set a realistic timeline based on my goal and stats — do not rush results');
+    lines.push('• If anything in my profile is unclear, state your assumption before proceeding');
+
+    const prompt = lines.join('\n');
+    document.getElementById('prompt-output').textContent = prompt;
+  }
+
+  // COPY
+  function copyPrompt() {
+    const text = document.getElementById('prompt-output').textContent;
+    if (!text || text.includes('Fill in your details')) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy prompt';
+      }, 2500);
+    });
+  }
+
+  // Initial build
+  buildPrompt();
+</script>
+</body>
+</html>
