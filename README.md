@@ -16,7 +16,7 @@ Served from `index.html` — open directly in any browser, no build step needed.
 
 ## What it does
 
-The user fills out five sections and the prompt updates live in a side panel on the right. When done, they click **Copy prompt** and paste it into any AI assistant.
+The user fills out five sections and the prompt updates live in the prompt panel (right side on desktop, below the form on mobile). When done, they click **Copy prompt** and paste it into any AI assistant.
 
 ### Section 1 — Your Stats
 - Imperial / Metric unit toggle (lbs/ft+in vs kg/cm)
@@ -130,7 +130,7 @@ FORMAT REQUIREMENTS
 
 ## UX features
 
-- **Live prompt preview** — right panel updates on every keystroke
+- **Live prompt preview** — prompt panel updates on every keystroke (right side on desktop, below form on mobile)
 - **localStorage persistence** — refresh-safe; all 20+ fields auto-saved
 - **Reset button** — top of form panel, requires confirmation before clearing
 - **Mobile prompt button** — fixed red pill button on mobile ("View Your Prompt ↓") that auto-hides via IntersectionObserver when the prompt panel is in view
@@ -168,7 +168,7 @@ Fonts: Bebas Neue (display/headings), Crimson Pro (body), JetBrains Mono (labels
 1. Open `index.html` in a browser
 2. Fill in your stats, goal, diet preferences, and meal structure
 3. Check the outputs you want in Section 5
-4. Watch the prompt build live on the right panel
+4. Watch the prompt build live in the prompt panel
 5. Click **Copy prompt**
 6. Paste into ChatGPT, Claude, Gemini, Copilot, or any AI assistant
 
