@@ -493,12 +493,27 @@
           <label>Activity level</label>
           <select id="activity" onchange="buildPrompt()">
             <option value="">— select —</option>
-            <option value="sedentary">Sedentary (desk job, little to no exercise)</option>
-            <option value="lightly">Lightly active (1–2 workouts/week)</option>
-            <option value="moderate">Moderately active (3–4 workouts/week)</option>
-            <option value="very">Very active (5–6 workouts/week, physical job)</option>
-            <option value="athlete">Athlete (2× daily training or hard manual labor)</option>
+            <option value="sedentary">Sedentary — desk job, little exercise (~4,000–5,000 steps/day)</option>
+            <option value="lightly">Lightly active — 1–2 workouts/week (~5,000–7,500 steps/day)</option>
+            <option value="moderate">Moderately active — 3–4 workouts/week (~7,500–10,000 steps/day)</option>
+            <option value="very">Very active — 5–6 workouts/week or physical job (~10,000–15,000 steps/day)</option>
+            <option value="athlete">Athlete — 2× daily training or hard manual labor (~15,000+ steps/day)</option>
           </select>
+        </div>
+
+        <div class="field">
+          <label>Medical context <span style="color:#555">(optional — affects recommendations)</span></label>
+          <div class="check-grid" id="medical-conditions">
+            <label class="check-item"><input type="checkbox" value="Type 2 diabetes / insulin resistance" onchange="buildPrompt()"> Type 2 diabetes / insulin resistance</label>
+            <label class="check-item"><input type="checkbox" value="Type 1 diabetes" onchange="buildPrompt()"> Type 1 diabetes</label>
+            <label class="check-item"><input type="checkbox" value="PCOS" onchange="buildPrompt()"> PCOS</label>
+            <label class="check-item"><input type="checkbox" value="Hypothyroidism" onchange="buildPrompt()"> Hypothyroidism</label>
+            <label class="check-item"><input type="checkbox" value="High blood pressure (hypertension)" onchange="buildPrompt()"> High blood pressure</label>
+            <label class="check-item"><input type="checkbox" value="High cholesterol" onchange="buildPrompt()"> High cholesterol</label>
+            <label class="check-item"><input type="checkbox" value="Kidney disease (limit protein)" onchange="buildPrompt()"> Kidney disease</label>
+            <label class="check-item"><input type="checkbox" value="Pregnancy / breastfeeding" onchange="buildPrompt()"> Pregnancy / breastfeeding</label>
+          </div>
+          <input type="text" id="medical-other" placeholder="Other conditions, medications, or relevant health notes" oninput="buildPrompt()" style="margin-top:.5rem">
         </div>
       </div>
     </div>
@@ -805,6 +820,11 @@
     const allergyBoxes = document.querySelectorAll('#allergies input[type="checkbox"]:checked');
     const allergies = Array.from(allergyBoxes).map(cb => cb.value);
 
+    // medical
+    const medBoxes = document.querySelectorAll('#medical-conditions input[type="checkbox"]:checked');
+    const medConditions = Array.from(medBoxes).map(cb => cb.value);
+    const medOther = document.getElementById('medical-other').value.trim();
+
     // outputs
     const outMacros = document.getElementById('out-macros').checked;
     const outWeek = document.getElementById('out-weekplan').checked;
@@ -813,16 +833,16 @@
     const outPrep = document.getElementById('out-prep').checked;
     const outSwap = document.getElementById('out-swap').checked;
 
-    return { age, sex, weight, bf, heightStr, activity, goal, calPref, diet, allergies, avoid, enjoy, meals, timing, cookTime, skill, budget, notes, outMacros, outWeek, outRecipes, outGrocery, outPrep, outSwap };
+    return { age, sex, weight, bf, heightStr, activity, goal, calPref, diet, allergies, avoid, enjoy, meals, timing, cookTime, skill, budget, notes, medConditions, medOther, outMacros, outWeek, outRecipes, outGrocery, outPrep, outSwap };
   }
 
   // LABEL MAPS
   const activityLabels = {
-    sedentary: 'Sedentary — desk job, little to no exercise',
-    lightly: 'Lightly active — 1–2 workouts per week',
-    moderate: 'Moderately active — 3–4 workouts per week',
-    very: 'Very active — 5–6 workouts per week or physical job',
-    athlete: 'Athlete — 2× daily training or very hard manual labor'
+    sedentary: 'Sedentary — desk job, little to no exercise (~4,000–5,000 steps/day)',
+    lightly: 'Lightly active — 1–2 workouts per week (~5,000–7,500 steps/day)',
+    moderate: 'Moderately active — 3–4 workouts per week (~7,500–10,000 steps/day)',
+    very: 'Very active — 5–6 workouts per week or physical job (~10,000–15,000 steps/day)',
+    athlete: 'Athlete — 2× daily training or very hard manual labor (~15,000+ steps/day)'
   };
   const goalLabels = {
     fat_loss: 'Fat loss — lose body fat while preserving as much muscle as possible',
@@ -905,6 +925,12 @@
     if (d.bf) profileParts.push(`Body fat: ~${d.bf}%`);
     if (profileParts.length) lines.push(profileParts.join(' | '));
     if (d.activity) lines.push(`Activity level: ${activityLabels[d.activity] || d.activity}`);
+    if (d.medConditions.length || d.medOther) {
+      const medParts = [...d.medConditions];
+      if (d.medOther) medParts.push(d.medOther);
+      lines.push(`Medical context: ${medParts.join('; ')}`);
+      lines.push('⚠ Adjust all recommendations to account for the medical conditions listed above.');
+    }
     lines.push('');
 
     // GOAL
@@ -984,7 +1010,7 @@
 
   // LOCALSTORAGE
   const LS_KEY = 'nutrition-prompt-state';
-  const TEXT_IDS = ['age','weight','bf','height-ft','height-in','height-cm','avoid','enjoy','notes'];
+  const TEXT_IDS = ['age','weight','bf','height-ft','height-in','height-cm','avoid','enjoy','notes','medical-other'];
   const SELECT_IDS = ['sex','activity','goal','calorie-pref','diet','timing','cook-time','skill','budget'];
   const CHECK_IDS = ['out-macros','out-weekplan','out-recipes','out-grocery','out-prep','out-swap'];
   const ALLERGY_VALUES = ['gluten-free','dairy-free','nut allergy','peanut allergy','shellfish allergy','egg-free','soy-free','low-FODMAP'];
@@ -997,6 +1023,8 @@
     state.meals = document.getElementById('meals').value;
     const checked = Array.from(document.querySelectorAll('#allergies input[type="checkbox"]:checked')).map(el => el.value);
     state.allergies = checked;
+    const medChecked = Array.from(document.querySelectorAll('#medical-conditions input[type="checkbox"]:checked')).map(el => el.value);
+    state.medConditions = medChecked;
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
   }
 
@@ -1015,6 +1043,11 @@
     if (Array.isArray(state.allergies)) {
       document.querySelectorAll('#allergies input[type="checkbox"]').forEach(cb => {
         cb.checked = state.allergies.includes(cb.value);
+      });
+    }
+    if (Array.isArray(state.medConditions)) {
+      document.querySelectorAll('#medical-conditions input[type="checkbox"]').forEach(cb => {
+        cb.checked = state.medConditions.includes(cb.value);
       });
     }
   }
