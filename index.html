@@ -289,6 +289,28 @@
   }
   footer a { color: #555; text-decoration: none; }
   footer a:hover { color: var(--light); }
+
+  /* MOBILE PROMPT BUTTON */
+  .mobile-prompt-btn {
+    display: none;
+    position: fixed; bottom: 1.25rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 150;
+    background: var(--red); color: var(--white); border: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em;
+    text-transform: uppercase; padding: .65rem 1.4rem; border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(200,16,46,.45);
+    align-items: center; gap: .4rem;
+    transition: opacity .25s, transform .25s;
+    white-space: nowrap;
+  }
+  .mobile-prompt-btn.hidden {
+    opacity: 0; pointer-events: none;
+    transform: translateX(-50%) translateY(6px);
+  }
+  @media (max-width: 860px) {
+    .mobile-prompt-btn { display: flex; }
+  }
 </style>
 </head>
 <body>
@@ -576,7 +598,7 @@
   <!-- end form-panel -->
 
   <!-- ═══════════════════════ PROMPT ═══════════════════════ -->
-  <div class="prompt-panel">
+  <div class="prompt-panel" id="prompt-panel">
     <div class="prompt-header">
       <div class="prompt-title">Your Prompt</div>
       <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">
@@ -615,6 +637,11 @@
   </div>
 
 </div>
+
+<button class="mobile-prompt-btn" id="mobile-prompt-btn" onclick="document.getElementById('prompt-panel').scrollIntoView({behavior:'smooth'})">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  View Your Prompt
+</button>
 
 <footer>
   <a href="https://www.brusovcoach.org" target="_blank" rel="noopener noreferrer">brusovcoach.org</a> &nbsp;·&nbsp; &copy; 2026 Vladimir Brusov
@@ -816,7 +843,7 @@
 
     // OUTPUT
     const outputs = [];
-    if (d.outMacros) outputs.push('1. My daily calorie target and macro breakdown (protein, carbs, fat in grams). Show your TDEE calculation and explain the logic.');
+    if (d.outMacros) outputs.push(`${outputs.length + 1}. My daily calorie target and macro breakdown (protein, carbs, fat in grams). Show your TDEE calculation and explain the logic.`);
     if (d.outWeek) outputs.push(`${outputs.length + 1}. A full 7-day meal plan. For each day: list every meal with its name, ingredients, portion sizes (in grams or cups), and per-meal macros. Include a daily total.`);
     if (d.outRecipes) outputs.push(`${outputs.length + 1}. Detailed recipes for at least 3 meals from the plan — full ingredient list with amounts and step-by-step preparation instructions.`);
     if (d.outGrocery) outputs.push(`${outputs.length + 1}. A weekly grocery list organized by category (produce, proteins, grains, dairy/alternatives, pantry staples). Include approximate quantities needed for the week.`);
@@ -847,6 +874,44 @@
 
     const prompt = lines.join('\n');
     document.getElementById('prompt-output').textContent = prompt;
+    saveState();
+  }
+
+  // LOCALSTORAGE
+  const LS_KEY = 'nutrition-prompt-state';
+  const TEXT_IDS = ['age','weight','bf','height-ft','height-in','height-cm','avoid','enjoy','notes'];
+  const SELECT_IDS = ['sex','activity','goal','calorie-pref','diet','timing','cook-time','skill','budget'];
+  const CHECK_IDS = ['out-macros','out-weekplan','out-recipes','out-grocery','out-prep','out-swap'];
+  const ALLERGY_VALUES = ['gluten-free','dairy-free','nut allergy','peanut allergy','shellfish allergy','egg-free','soy-free','low-FODMAP'];
+
+  function saveState() {
+    const state = { unit };
+    TEXT_IDS.forEach(id => { state[id] = document.getElementById(id).value; });
+    SELECT_IDS.forEach(id => { state[id] = document.getElementById(id).value; });
+    CHECK_IDS.forEach(id => { state[id] = document.getElementById(id).checked; });
+    state.meals = document.getElementById('meals').value;
+    const checked = Array.from(document.querySelectorAll('#allergies input[type="checkbox"]:checked')).map(el => el.value);
+    state.allergies = checked;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  function restoreState() {
+    let state;
+    try { state = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e) {}
+    if (!state) return;
+    if (state.unit && state.unit !== 'imperial') setUnit(state.unit);
+    TEXT_IDS.forEach(id => { if (state[id] != null) document.getElementById(id).value = state[id]; });
+    SELECT_IDS.forEach(id => { if (state[id] != null) document.getElementById(id).value = state[id]; });
+    CHECK_IDS.forEach(id => { if (state[id] != null) document.getElementById(id).checked = state[id]; });
+    if (state.meals != null) {
+      document.getElementById('meals').value = state.meals;
+      document.getElementById('meals-val').textContent = state.meals;
+    }
+    if (Array.isArray(state.allergies)) {
+      document.querySelectorAll('#allergies input[type="checkbox"]').forEach(cb => {
+        cb.checked = state.allergies.includes(cb.value);
+      });
+    }
   }
 
   // COPY
@@ -864,8 +929,18 @@
     });
   }
 
-  // Initial build
+  // Restore saved state, then build
+  restoreState();
   buildPrompt();
+
+  // Hide mobile button when prompt panel is in view
+  const _promptPanel = document.getElementById('prompt-panel');
+  const _mobileBtn = document.getElementById('mobile-prompt-btn');
+  if (_promptPanel && _mobileBtn) {
+    new IntersectionObserver(entries => {
+      _mobileBtn.classList.toggle('hidden', entries[0].isIntersecting);
+    }, { threshold: 0.15 }).observe(_promptPanel);
+  }
 </script>
 </body>
 </html>
