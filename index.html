@@ -133,6 +133,7 @@
     font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em;
     text-transform: uppercase; padding: .4rem .8rem;
     display: flex; align-items: center; gap: .35rem;
+    min-height: 36px;
     transition: color .2s, border-color .2s;
   }
   .reset-btn:hover { color: var(--white); border-color: #555; }
@@ -385,6 +386,19 @@
       text-align: center;
       padding: .6rem .5rem;
     }
+
+    /* Reset button: raise touch target on mobile */
+    .reset-btn {
+      min-height: 44px;
+      padding: .5rem 1rem;
+    }
+  }
+
+  /* Medical conditions: longer labels need 1-col sooner than allergies */
+  @media (max-width: 600px) {
+    #medical-conditions.check-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 480px) {
@@ -406,13 +420,16 @@
     .field-row { grid-template-columns: 1fr; }
     .field-row-3 { grid-template-columns: 1fr; }
 
-    /* Allergies: single column on small phones */
+    /* Allergies and remaining check-grids: single column on small phones */
     .check-grid { grid-template-columns: 1fr; }
 
-    /* check-item: ensure touch target height */
+    /* Form panel header: slightly smaller label on very narrow screens */
+    .form-panel-label { font-size: 1.2rem; }
+
+    /* check-item: ensure 44px touch target on small phones */
     .check-item {
       padding: .3rem 0;
-      min-height: 36px;
+      min-height: 44px;
     }
 
     /* output-item: already padded, keep as-is but ensure legibility */
