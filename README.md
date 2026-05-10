@@ -21,7 +21,8 @@ The user fills out five sections and the prompt updates live in a side panel on 
 ### Section 1 — Your Stats
 - Imperial / Metric unit toggle (lbs/ft+in vs kg/cm)
 - Age, sex, weight, height, body fat % (optional)
-- Activity level (5 options: sedentary → athlete)
+- Activity level (5 options: sedentary → athlete, with steps/day reference for each)
+- Medical context: 8 condition checkboxes (Type 1/2 diabetes, PCOS, hypothyroidism, hypertension, high cholesterol, kidney disease, pregnancy/breastfeeding) + free-text field
 
 ### Section 2 — Your Goal
 - Primary goal: fat loss, muscle gain, recomposition, maintain, performance, general health
@@ -61,7 +62,8 @@ Six independently toggleable outputs:
 
 MY PROFILE
 Age | Sex | Weight | Height | Body fat %
-Activity level
+Activity level (with steps/day range)
+Medical context + ⚠ adjustment instruction (if any conditions selected)
 
 MY GOAL
 Goal (full description)
@@ -80,11 +82,13 @@ Cooking time / skill / budget
 Additional context (free text)
 
 PLEASE PROVIDE
-[Numbered list of selected outputs]
+[Numbered list of selected outputs — sequential regardless of which are checked]
 — or fallback: "A complete, detailed nutrition plan..."
 
 FORMAT REQUIREMENTS
-• Specific gram/cup/oz amounts only
+• Clear headers and sections
+• Culinarily coherent meals — no unusual flavor/texture combinations
+• Specific gram/cup/oz amounts only — no vague terms
 • Macros per meal + daily totals (when applicable)
 • Avoid listed foods (when applicable)
 • Realistic timeline — AI determines based on goal and stats
@@ -102,21 +106,34 @@ FORMAT REQUIREMENTS
 | Frameworks | None |
 | External resources | Google Fonts (Bebas Neue, Crimson Pro, JetBrains Mono) |
 | AI on page | None |
+| Persistence | localStorage — all fields auto-saved, restored on reload |
 | Accessibility | Semantic HTML, labels on all inputs |
 
 ### Key JS functions
 
-- **`setUnit(u)`** — switches between imperial and metric, shows/hides the correct height fields, updates weight label and placeholder
-- **`getData()`** — reads all form values and returns a flat data object
-- **`buildPrompt()`** — assembles the prompt from the data object, updates the live preview; runs on every `oninput` / `onchange` event
-- **`copyPrompt()`** — copies the prompt text to clipboard via `navigator.clipboard.writeText`, shows a "Copied!" state for 2.5 s
+- **`setUnit(u)`** — switches imperial/metric, shows/hides height fields, updates labels and placeholders
+- **`getData()`** — reads all form values and returns a flat data object including medical conditions
+- **`buildPrompt()`** — assembles the prompt, updates the live preview, saves state to localStorage; fires on every `oninput` / `onchange`
+- **`copyPrompt()`** — copies prompt to clipboard, shows "Copied!" state for 2.5s
+- **`resetForm()`** — confirms with user, clears all fields and localStorage, restores defaults (macros + week plan checked, slider at 3, imperial units)
+- **`saveState()` / `restoreState()`** — serialize/deserialize all form fields to localStorage under key `nutrition-prompt-state`
 
 ### Prompt logic notes
 
-- Output items are auto-numbered based on which checkboxes are checked — skipped items don't leave gaps in the numbering
-- If all output checkboxes are unchecked, the PLEASE PROVIDE section falls back to a generic full-plan request so the prompt always has a clear task for the AI
+- Output items use `outputs.length + 1` before each `.push()` — sequential numbering regardless of which checkboxes are checked, no hardcoded "1."
+- If all output checkboxes are unchecked, PLEASE PROVIDE falls back to a generic full-plan request
+- Medical context injects a `⚠` warning line into the prompt only when at least one condition is selected
 - The "show macros" format rule is only injected when a meal plan or macro output is selected
-- The "avoid foods" format rule is only injected when the avoid field is filled
+- The "avoid foods" format rule is only injected when the avoid field is non-empty
+
+---
+
+## UX features
+
+- **Live prompt preview** — right panel updates on every keystroke
+- **localStorage persistence** — refresh-safe; all 20+ fields auto-saved
+- **Reset button** — top of form panel, requires confirmation before clearing
+- **Mobile prompt button** — fixed red pill button on mobile ("View Your Prompt ↓") that auto-hides via IntersectionObserver when the prompt panel is in view
 
 ---
 
@@ -135,6 +152,14 @@ Matches [brusovcoach.org](https://brusovcoach.org):
 --light: #D4CFC8   /* prompt text */
 --white: #F5F0E8   /* primary text */
 ```
+
+Fonts: Bebas Neue (display/headings), Crimson Pro (body), JetBrains Mono (labels, code, buttons)
+
+### Mobile breakpoints
+- `≤860px` — single column layout, prompt panel goes static, mobile prompt button appears
+- `≤600px` — medical conditions grid drops to 1 column
+- `≤480px` — field rows stack, allergy grid goes 1 column, tighter padding
+- All inputs `font-size: 1rem` to prevent iOS Safari auto-zoom
 
 ---
 
