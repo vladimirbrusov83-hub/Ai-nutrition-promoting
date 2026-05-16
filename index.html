@@ -262,6 +262,19 @@
   .copy-btn:hover { background: var(--red-dark); }
   .copy-btn:active { transform: scale(.97); }
   .copy-btn.copied { background: #1a5c1a; }
+  .copy-btn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; }
+  .copy-btn.copy-error { background: #5c1a1a; }
+  .completeness-bar {
+    display: flex; align-items: center; gap: .6rem;
+    font-family: var(--font-mono); font-size: .63rem;
+    color: var(--gray); letter-spacing: .07em;
+  }
+  .completeness-dots { display: flex; gap: 5px; }
+  .c-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2a2a2a; transition: background .25s;
+  }
+  .c-dot.filled { background: var(--red); }
 
   .prompt-box {
     background: var(--dark2); border: 1px solid #2a2a2a; border-radius: 10px;
@@ -779,10 +792,21 @@
   <div class="prompt-panel" id="prompt-panel">
     <div class="prompt-header">
       <div class="prompt-title">Your Prompt</div>
-      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">
+      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()" disabled>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         Copy prompt
       </button>
+    </div>
+
+    <div class="completeness-bar">
+      <div class="completeness-dots">
+        <div class="c-dot" id="cd-1"></div>
+        <div class="c-dot" id="cd-2"></div>
+        <div class="c-dot" id="cd-3"></div>
+        <div class="c-dot" id="cd-4"></div>
+        <div class="c-dot" id="cd-5"></div>
+      </div>
+      <span id="completeness-text"></span>
     </div>
 
     <div class="prompt-box">
@@ -954,6 +978,23 @@
     flexible: 'Flexible budget — quality over cost, premium ingredients are fine'
   };
 
+  function updateCompleteness(d) {
+    const statsOk  = !!(d.age && d.weight);
+    const goalOk   = !!d.goal;
+    const dietOk   = !!(d.diet || d.allergies.length || d.avoid);
+    const mealOk   = !!(d.timing || d.cookTime || d.skill || d.budget || d.notes);
+    const outputOk = d.outMacros || d.outWeek || d.outRecipes || d.outGrocery || d.outPrep || d.outSwap;
+    const sections = [statsOk, goalOk, dietOk, mealOk, outputOk];
+    const count = sections.filter(Boolean).length;
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById('cd-' + i).classList.toggle('filled', sections[i - 1]);
+    }
+    const isReady = statsOk && goalOk;
+    const label = count === 5 ? 'All sections filled' : `${count} of 5 sections filled`;
+    document.getElementById('completeness-text').textContent = isReady ? label : label + ' · fill stats + goal to copy';
+    document.getElementById('copy-btn').disabled = !isReady;
+  }
+
   // BUILD PROMPT
   function buildPrompt() {
     const d = getData();
@@ -962,6 +1003,7 @@
     const hasAny = d.age || d.sex || d.weight || d.goal || d.diet || d.activity;
     if (!hasAny) {
       document.getElementById('prompt-output').innerHTML = '<span class="prompt-empty">Fill in your details to generate your personalized nutrition prompt...</span>';
+      updateCompleteness(d);
       return;
     }
 
@@ -1064,6 +1106,7 @@
 
     const prompt = lines.join('\n');
     document.getElementById('prompt-output').textContent = prompt;
+    updateCompleteness(d);
     saveState();
   }
 
@@ -1127,18 +1170,44 @@
   }
 
   // COPY
+  const COPY_BTN_DEFAULT = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy prompt';
+
+  function legacyCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }
+
   function copyPrompt() {
+    const btn = document.getElementById('copy-btn');
+    if (btn.disabled) return;
     const text = document.getElementById('prompt-output').textContent;
     if (!text || text.includes('Fill in your details')) return;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copy-btn');
+
+    function onSuccess() {
       btn.classList.add('copied');
       btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy prompt';
-      }, 2500);
-    });
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = COPY_BTN_DEFAULT; }, 2500);
+    }
+
+    function onError() {
+      btn.classList.add('copy-error');
+      btn.textContent = 'Copy failed — select manually';
+      setTimeout(() => { btn.classList.remove('copy-error'); btn.innerHTML = COPY_BTN_DEFAULT; }, 3000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onSuccess, () => {
+        legacyCopy(text) ? onSuccess() : onError();
+      });
+    } else {
+      legacyCopy(text) ? onSuccess() : onError();
+    }
   }
 
   // Restore saved state, then build
