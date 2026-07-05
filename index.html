@@ -6,6 +6,14 @@
 <meta name="description" content="Build the perfect AI nutrition prompt. Fill in your stats, goals, and preferences — get a ready-to-paste prompt for ChatGPT, Claude, or any AI assistant.">
 <title>Nutrition with AI — Vladimir Brusov | Strength Coach</title>
 <link rel="canonical" href="https://brusovcoach.org/nutrition">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%230A0A0A'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' fill='%23C8102E' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nutrition with AI — Vladimir Brusov">
+<meta property="og:description" content="Build the perfect AI nutrition prompt. Fill in your stats, goals, and preferences — get a ready-to-paste prompt for ChatGPT, Claude, or any AI assistant.">
+<meta property="og:url" content="https://brusovcoach.org/nutrition">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nutrition with AI — Vladimir Brusov">
+<meta name="twitter:description" content="Build the perfect AI nutrition prompt. Fill in your stats, goals, and preferences — get a ready-to-paste prompt for ChatGPT, Claude, or any AI assistant.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -524,11 +532,11 @@
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Age</label>
-            <input type="number" id="age" min="14" max="99" placeholder="e.g. 35" oninput="buildPrompt()">
+            <label for="age">Age</label>
+            <input type="number" inputmode="numeric" id="age" min="14" max="99" placeholder="e.g. 35" oninput="buildPrompt()">
           </div>
           <div class="field">
-            <label>Sex</label>
+            <label for="sex">Sex</label>
             <select id="sex" onchange="buildPrompt()">
               <option value="">— select —</option>
               <option value="male">Male</option>
@@ -538,30 +546,30 @@
         </div>
         <div class="field-row" id="height-imperial">
           <div class="field">
-            <label>Height — feet</label>
-            <input type="number" id="height-ft" min="4" max="7" placeholder="5" oninput="buildPrompt()">
+            <label for="height-ft">Height — feet</label>
+            <input type="number" inputmode="numeric" id="height-ft" min="4" max="7" placeholder="5" oninput="buildPrompt()">
           </div>
           <div class="field">
-            <label>Height — inches</label>
-            <input type="number" id="height-in" min="0" max="11" placeholder="11" oninput="buildPrompt()">
+            <label for="height-in">Height — inches</label>
+            <input type="number" inputmode="numeric" id="height-in" min="0" max="11" placeholder="11" oninput="buildPrompt()">
           </div>
         </div>
         <div class="field" id="height-metric" style="display:none">
-          <label>Height (cm)</label>
-          <input type="number" id="height-cm" min="130" max="230" placeholder="e.g. 180" oninput="buildPrompt()">
+          <label for="height-cm">Height (cm)</label>
+          <input type="number" inputmode="numeric" id="height-cm" min="130" max="230" placeholder="e.g. 180" oninput="buildPrompt()">
         </div>
         <div class="field-row">
           <div class="field">
-            <label id="weight-label">Weight (lbs)</label>
-            <input type="number" id="weight" min="80" max="400" placeholder="e.g. 185" oninput="buildPrompt()">
+            <label id="weight-label" for="weight">Weight (lbs)</label>
+            <input type="number" inputmode="decimal" id="weight" min="80" max="400" placeholder="e.g. 185" oninput="buildPrompt()">
           </div>
           <div class="field">
-            <label>Body fat % <span style="color:#555">(optional)</span></label>
-            <input type="number" id="bf" min="3" max="55" placeholder="e.g. 18" oninput="buildPrompt()">
+            <label for="bf">Body fat % <span style="color:#555">(optional)</span></label>
+            <input type="number" inputmode="decimal" id="bf" min="3" max="55" placeholder="e.g. 18" oninput="buildPrompt()">
           </div>
         </div>
         <div class="field">
-          <label>Activity level</label>
+          <label for="activity">Activity level</label>
           <select id="activity" onchange="buildPrompt()">
             <option value="">— select —</option>
             <option value="sedentary">Sedentary — desk job, little exercise (~4,000–5,000 steps/day)</option>
@@ -584,7 +592,7 @@
             <label class="check-item"><input type="checkbox" value="Kidney disease (limit protein)" onchange="buildPrompt()"> Kidney disease</label>
             <label class="check-item"><input type="checkbox" value="Pregnancy / breastfeeding" onchange="buildPrompt()"> Pregnancy / breastfeeding</label>
           </div>
-          <input type="text" id="medical-other" placeholder="Other conditions, medications, or relevant health notes" oninput="buildPrompt()" style="margin-top:.5rem">
+          <input type="text" id="medical-other" aria-label="Other medical conditions" placeholder="Other conditions, medications, or relevant health notes" oninput="buildPrompt()" style="margin-top:.5rem">
         </div>
       </div>
     </div>
@@ -597,7 +605,7 @@
       </div>
       <div class="section-body">
         <div class="field">
-          <label>Primary goal</label>
+          <label for="goal">Primary goal</label>
           <select id="goal" onchange="buildPrompt()">
             <option value="">— select —</option>
             <option value="fat_loss">Fat loss (cut) — lose body fat, preserve muscle</option>
@@ -609,7 +617,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Calorie preference <span style="color:#555">(leave blank to let AI calculate)</span></label>
+          <label for="calorie-pref">Calorie preference <span style="color:#555">(leave blank to let AI calculate)</span></label>
           <select id="calorie-pref" onchange="buildPrompt()">
             <option value="">AI calculates based on my stats</option>
             <option value="deficit_aggressive">Aggressive deficit (~500 kcal below TDEE)</option>
@@ -631,7 +639,7 @@
       </div>
       <div class="section-body">
         <div class="field">
-          <label>Diet type</label>
+          <label for="diet">Diet type</label>
           <select id="diet" onchange="buildPrompt()">
             <option value="">— select —</option>
             <option value="omnivore">Omnivore (eat everything)</option>
@@ -659,11 +667,11 @@
           </div>
         </div>
         <div class="field">
-          <label>Foods I dislike or want to avoid</label>
+          <label for="avoid">Foods I dislike or want to avoid</label>
           <input type="text" id="avoid" placeholder="e.g. cilantro, mushrooms, liver, brussels sprouts" oninput="buildPrompt()">
         </div>
         <div class="field">
-          <label>Foods I enjoy or want more of <span style="color:#555">(optional)</span></label>
+          <label for="enjoy">Foods I enjoy or want more of <span style="color:#555">(optional)</span></label>
           <input type="text" id="enjoy" placeholder="e.g. chicken, rice, Greek yogurt, eggs" oninput="buildPrompt()">
         </div>
       </div>
@@ -677,7 +685,7 @@
       </div>
       <div class="section-body">
         <div class="field">
-          <label>Meals per day: <span id="meals-val" style="color:var(--gold)">3</span></label>
+          <label for="meals">Meals per day: <span id="meals-val" style="color:var(--gold)">3</span></label>
           <div class="slider-wrap">
             <span style="font-size:.8rem;color:var(--gray)">2</span>
             <input type="range" id="meals" min="2" max="6" value="3" oninput="document.getElementById('meals-val').textContent=this.value; buildPrompt()">
@@ -685,7 +693,7 @@
           </div>
         </div>
         <div class="field">
-          <label>Eating window / timing</label>
+          <label for="timing">Eating window / timing</label>
           <select id="timing" onchange="buildPrompt()">
             <option value="">No specific preference</option>
             <option value="3meals_classic">Classic 3 meals (breakfast, lunch, dinner)</option>
@@ -697,7 +705,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Cooking time available per meal</label>
+          <label for="cook-time">Cooking time available per meal</label>
           <select id="cook-time" onchange="buildPrompt()">
             <option value="">No preference</option>
             <option value="quick">Quick — under 20 minutes (minimal prep)</option>
@@ -707,7 +715,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Cooking skill level</label>
+          <label for="skill">Cooking skill level</label>
           <select id="skill" onchange="buildPrompt()">
             <option value="">No preference</option>
             <option value="beginner">Beginner (basic techniques, simple recipes)</option>
@@ -716,7 +724,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Grocery budget</label>
+          <label for="budget">Grocery budget</label>
           <select id="budget" onchange="buildPrompt()">
             <option value="">No preference</option>
             <option value="budget">Budget-friendly (prioritize cost-effective foods)</option>
@@ -725,7 +733,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Additional notes <span style="color:#555">(training schedule, lifestyle, anything else)</span></label>
+          <label for="notes">Additional notes <span style="color:#555">(training schedule, lifestyle, anything else)</span></label>
           <textarea id="notes" placeholder="e.g. I train at 6am fasted. Work night shifts. Travel often. Cooking for family of 4." oninput="buildPrompt()"></textarea>
         </div>
       </div>
@@ -867,6 +875,34 @@
   // UNIT SYSTEM
   let unit = 'imperial';
   function setUnit(u) {
+    if (u === unit) return;
+
+    // convert weight
+    const weightEl = document.getElementById('weight');
+    const w = parseFloat(weightEl.value);
+    if (!isNaN(w)) {
+      weightEl.value = u === 'metric'
+        ? Math.round(w / 2.20462 * 10) / 10   // lbs -> kg
+        : Math.round(w * 2.20462 * 10) / 10;  // kg -> lbs
+    }
+
+    // convert height
+    if (u === 'metric') {
+      const ft = parseFloat(document.getElementById('height-ft').value);
+      const inches = parseFloat(document.getElementById('height-in').value);
+      if (!isNaN(ft) || !isNaN(inches)) {
+        const totalIn = (isNaN(ft) ? 0 : ft) * 12 + (isNaN(inches) ? 0 : inches);
+        document.getElementById('height-cm').value = Math.round(totalIn * 2.54);
+      }
+    } else {
+      const cm = parseFloat(document.getElementById('height-cm').value);
+      if (!isNaN(cm)) {
+        const totalIn = cm / 2.54;
+        document.getElementById('height-ft').value = Math.floor(totalIn / 12);
+        document.getElementById('height-in').value = Math.round(totalIn % 12);
+      }
+    }
+
     unit = u;
     document.getElementById('unit-imperial').classList.toggle('active', u === 'imperial');
     document.getElementById('unit-metric').classList.toggle('active', u === 'metric');
