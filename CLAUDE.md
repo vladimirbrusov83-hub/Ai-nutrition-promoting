@@ -16,27 +16,24 @@ CLAUDE.md    — this file
 
 ## Design system
 
-Dark theme. Do not introduce light backgrounds, new colors, or different fonts.
+Light "academic" theme shared with the six knowledge hubs (Hypertrophy, Powerlifting, First Meet, Food Tracking, Health, Rucking). Keep it matching them: no dark backgrounds, no glows, no pill buttons.
 
 ```
---red:   #C8102E   primary actions, section numbers
---gold:  #C9A84C   accents, hints
---black: #0A0A0A   page background
---dark2: #1A1A1A   card/section backgrounds
---dark3: #242424   input backgrounds, section headers
---gray:  #888888   muted labels
---light: #D4CFC8   secondary text, prompt output text
---white: #F5F0E8   primary text
+--bg:    #fdfcfa   page background
+--bg2:   #f6f4ef   header bar, section headers, footer
+--border:#e2ded4   hairline rules and card borders
+--text:  #15171b   primary text
+--muted: #6a6f77   labels, secondary UI
+--accent:#8c3a1c   sienna (same as Food Tracking): buttons, section numbers, focus
 ```
 
-Fonts (loaded from Google Fonts — do not swap):
-- `Bebas Neue` — display/headings
-- `Crimson Pro` — body text
-- `JetBrains Mono` — labels, buttons, code elements
+Fonts (Google Fonts): `Source Serif 4` for headings (sentence case), `DM Sans` for body and small tracked-caps labels. The prompt output box uses the system monospace.
+
+Header: filled accent "Training hub" button linking to https://brusovcoach.org, then the page title.
 
 ## Mobile breakpoints
 
-- `≤860px` — single column, prompt panel static, mobile pill button visible
+- `≤860px` — single column, prompt panel static, mobile "View your prompt" button visible
 - `≤600px` — medical conditions grid → 1 column
 - `≤480px` — field-row grids stack, allergy grid → 1 column, tighter padding
 - All inputs must stay at `font-size: 1rem` minimum (iOS Safari zoom prevention)
