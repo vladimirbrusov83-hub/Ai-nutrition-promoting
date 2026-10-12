@@ -15,7 +15,7 @@
 <meta name="twitter:title" content="Nutrition with AI | Vladimir Brusov">
 <meta name="twitter:description" content="Build the perfect AI nutrition prompt. Fill in your stats, goals, and preferences, then get a ready-to-paste prompt for ChatGPT, Claude, or any AI assistant.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #fdfcfa;
@@ -53,8 +53,8 @@
   /* NAV: hub-style header, filled Training hub button + title */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
+    background: #15171b;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex; align-items: center; gap: 16px;
     padding: 0 2rem; height: 64px;
     transition: border-color .3s;
@@ -63,7 +63,7 @@
   .nav-back {
     font-family: var(--font-label); font-size: 11px; font-weight: 700;
     letter-spacing: 0.14em; text-transform: uppercase;
-    color: #fff; background: var(--accent); text-decoration: none;
+    color: #fff; background: #8f1d2c; text-decoration: none;
     padding: 9px 14px; border-radius: var(--radius-lg);
     white-space: nowrap; flex-shrink: 0;
     display: inline-flex; align-items: center; gap: 6px;
@@ -71,64 +71,94 @@
   .nav-back::before { content: "\2190"; }
   .nav-back:hover { filter: brightness(1.15); }
   .nav-logo {
-    font-family: var(--font-display); font-size: 17px; font-weight: 600;
-    color: var(--text); flex: 1; min-width: 0;
+    font-family: 'Bebas Neue', var(--font-display); font-size: 22px; font-weight: 400; letter-spacing: 1.5px;
+    color: #fff; flex: 1; min-width: 0;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .nav-reset-btn {
     display: none;
-    background: none; border: 1px solid var(--border-light); border-radius: var(--radius-lg);
-    color: var(--muted); cursor: pointer;
+    background: none; border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-lg);
+    color: rgba(255,255,255,0.8); cursor: pointer;
     font-family: var(--font-label); font-size: 11px; font-weight: 600;
     letter-spacing: 0.12em; text-transform: uppercase; padding: .4rem .75rem;
     align-items: center; gap: .3rem;
     min-height: 36px; flex-shrink: 0;
     transition: color .2s, border-color .2s;
   }
-  .nav-reset-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .nav-reset-btn:hover { color: #fff; border-color: #fff; }
 
-  /* HERO */
+  /* HERO: dark banner with crimson glow, same look as the Effective Log card on the hub */
   .hero {
-    padding: 128px 1.5rem 48px;
-    max-width: 1100px; margin: 0 auto;
-    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    background: #15171b;
+    padding: 128px max(1.5rem, calc((100% - 1100px) / 2 + 1.5rem)) 64px;
     margin-bottom: 40px;
   }
-  .hero > * { max-width: 760px; }
+  .hero::before {
+    content: ""; position: absolute; inset: -50%;
+    background:
+      radial-gradient(closest-side, rgba(143,29,44,0.55), transparent 70%) 72% 30% / 60% 60% no-repeat,
+      radial-gradient(closest-side, rgba(143,29,44,0.28), transparent 70%) 15% 85% / 50% 50% no-repeat;
+    animation: heroDrift 18s ease-in-out infinite alternate;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+    mask-image: linear-gradient(to bottom, #000 30%, transparent);
+  }
+  @keyframes heroDrift { from { transform: translate(0,0) rotate(0); } to { transform: translate(-6%,4%) rotate(8deg); } }
+  .hero > * { position: relative; z-index: 1; max-width: 760px; animation: heroUp .8s cubic-bezier(.2,.7,.2,1) both; }
+  .hero > :nth-child(2) { animation-delay: .08s; }
+  .hero > :nth-child(3) { animation-delay: .16s; }
+  .hero > :nth-child(4) { animation-delay: .24s; }
+  .hero > :nth-child(5) { animation-delay: .32s; }
+  @keyframes heroUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .hero > .hero-big {
+    position: absolute; z-index: 0; right: max(1.5rem, calc((100% - 1100px) / 2 + 1.5rem)); bottom: -30px;
+    width: 260px; height: 260px; max-width: none; color: rgba(255,255,255,0.08); animation: none;
+  }
+  .hero-big svg { width: 100%; height: 100%; }
   .hero-tag {
     font-family: var(--font-label); font-size: 11px; font-weight: 600;
-    color: var(--muted); letter-spacing: 0.22em; text-transform: uppercase;
+    color: #f0a2aa; letter-spacing: 0.22em; text-transform: uppercase;
     margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
   }
-  .hero-tag::before { content: ""; width: 24px; height: 1px; background: var(--muted); }
+  .hero-tag::before { content: ""; width: 24px; height: 1px; background: #f0a2aa; }
   .hero-byline {
-    font-family: var(--font-display); font-size: 12px; font-weight: 700;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--muted);
+    font-family: var(--font-label); font-size: 12px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6);
     margin-bottom: 10px; display: block;
   }
   .hero h1 {
-    font-family: var(--font-display); font-size: 46px; font-weight: 600;
-    line-height: 1.1; letter-spacing: -0.006em;
-    color: var(--text); margin-bottom: 18px;
+    font-family: 'Bebas Neue', var(--font-display); font-size: 84px; font-weight: 400;
+    line-height: 0.95; letter-spacing: 1px; text-transform: uppercase;
+    color: #fff; margin-bottom: 20px;
   }
   .hero-sub {
-    font-size: 17.5px; color: var(--text-secondary);
-    margin-bottom: 20px; line-height: 1.6;
+    font-size: 18px; color: rgba(246,244,239,0.82);
+    margin-bottom: 22px; line-height: 1.6;
   }
   .hero-note {
     display: inline-block;
-    border-left: 2px solid var(--accent);
+    border-left: 2px solid #e57b86;
     padding: 2px 0 2px 14px;
-    font-size: 14.5px; color: var(--text-secondary);
+    font-size: 14.5px; color: rgba(246,244,239,0.8);
   }
-  .hero-note strong { color: var(--text); font-weight: 600; }
+  .hero-note strong { color: #fff; font-weight: 600; }
   @media (max-width: 860px) {
-    .hero { padding: 100px 1.25rem 36px; margin-bottom: 28px; }
-    .hero h1 { font-size: 36px; }
+    .hero { padding-top: 100px; padding-bottom: 44px; margin-bottom: 28px; }
+    .hero h1 { font-size: 60px; }
+    .hero > .hero-big { width: 170px; height: 170px; right: -10px; }
   }
   @media (max-width: 480px) {
-    .hero { padding: 92px 1rem 32px; }
+    .hero { padding-top: 92px; padding-bottom: 36px; }
+    .hero h1 { font-size: 48px; }
     .hero-sub { font-size: 16.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero::before, .hero > * { animation: none; }
   }
 
   /* LAYOUT */
@@ -420,6 +450,7 @@
 </nav>
 
 <section class="hero">
+  <span class="hero-big" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15.5l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></svg></span>
   <span class="hero-tag">Coaching Tool</span>
   <span class="hero-byline">Coach Vladimir Brusov</span>
   <h1>Nutrition with AI</h1>

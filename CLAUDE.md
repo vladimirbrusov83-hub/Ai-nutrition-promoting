@@ -16,7 +16,7 @@ CLAUDE.md    — this file
 
 ## Design system
 
-Light "academic" theme shared with the six knowledge hubs (Hypertrophy, Powerlifting, First Meet, Food Tracking, Health, Rucking). Keep it matching them: no dark backgrounds, no glows, no pill buttons.
+Light "academic" theme shared with the six knowledge hubs (Hypertrophy, Powerlifting, First Meet, Food Tracking, Health, Rucking), with one exception set 2026-10-12 at the owner's request: the nav and hero are a dark banner with a crimson glow and Bebas Neue title, matching the Nutrition with AI / Effective Log cards on brusovcoach.org. Everything below the hero stays light. No pill buttons.
 
 ```
 --bg:    #fdfcfa   page background
